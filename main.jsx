@@ -2092,3 +2092,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <HisabProEnterprise />
   </React.StrictMode>
 );
+```
