@@ -1,4 +1,3 @@
-jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 
