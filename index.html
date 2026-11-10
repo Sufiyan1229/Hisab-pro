@@ -4,12 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#101D35" />
-    <meta name="description" content="ROKDO — Aapka Digital Accountant. Simple business accounting, ledgers, quotations and invoices." />
-    <link rel="icon" type="image/svg+xml" href="/rokdo-mark.svg" />
     <title>ROKDO — Aapka Digital Accountant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        background-color: #F4F6FA;
+        color: #202B3C;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* ========================================================= */
+      /* 100% CLEAN A4 PRINT STYLES FOR IPHONE SAFARI & CHROME     */
+      /* ========================================================= */
+      @media print {
+        /* पूरा बैकग्राउंड और ऐप गायब करें */
+        body, html {
+          background: #ffffff !important;
+          color: #000000 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          height: auto !important;
+          overflow: visible !important;
+        }
+
+        /* मोडल के काले पर्दे, हेडर, नेविगेशन और बैकड्रॉप को पूरी तरह हटाएं */
+        header, nav, aside, .no-print, .fixed.inset-0 {
+          display: none !important;
+          background: transparent !important;
+        }
+
+        /* सिर्फ और सिर्फ इनवॉइस पेपर को पूरा A4 पन्ने पर दिखाएं */
+        #printable-doc {
+          display: block !important;
+          visibility: visible !important;
+          position: fixed !important;
+          left: 0 !important;
+          top: 0 !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 10mm 15mm !important;
+          box-shadow: none !important;
+          border: none !important;
+          background: #ffffff !important;
+          page-break-inside: avoid;
+        }
+
+        #printable-doc * {
+          visibility: visible !important;
+        }
+
+        @page {
+          size: A4 portrait;
+          margin: 10mm;
+        }
+      }
+    </style>
   </head>
-  <body class="bg-[#F5F7FA] text-slate-900 select-none antialiased">
+  <body class="bg-[#F4F6FA] text-[#202B3C] antialiased">
     <div id="root"></div>
     <script type="module" src="/main.jsx"></script>
   </body>
