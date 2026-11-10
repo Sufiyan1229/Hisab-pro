@@ -571,7 +571,7 @@ function RokdoApp() {
         <header className="sticky top-0 z-20 bg-[#101D35] text-white border-b border-[#172B4D] px-4 md:px-8 py-3.5 flex items-center justify-between shadow-md">
           <div className="flex items-center space-x-3">
             <div className="md:hidden flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#C9A04A] text-[#101D35] font-black flex items-center justify-center text-base">H</div>
+              <div className="w-8 h-8 rounded-lg bg-[#C9A04A] text-[#101D35] font-black flex items-center justify-center text-base">R</div>
               <span className="font-bold text-sm tracking-tight text-white">{biz.name}</span>
             </div>
             <div className="hidden md:flex items-center space-x-2 text-xs font-medium text-slate-300">
@@ -579,7 +579,7 @@ function RokdoApp() {
               <span>/</span>
               <span className="capitalize text-white font-semibold">{activeTab}</span>
               <span>•</span>
-              <span className="text-slate-400">06-11-2026</span>
+              <span className="text-slate-400">{new Intl.DateTimeFormat(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date())}</span>
             </div>
           </div>
 
@@ -663,6 +663,19 @@ function RokdoApp() {
           {/* 1. DASHBOARD */}
           {activeTab === 'dashboard' && (
             <>
+              <section className="rokdo-welcome-panel">
+                <div className="rokdo-welcome-copy">
+                  <span className="rokdo-eyebrow">ROKDO BUSINESS OVERVIEW</span>
+                  <h1>{lang === 'hi' ? `नमस्ते${biz.ownerName ? `, ${biz.ownerName}` : ''} 👋` : `Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}${biz.ownerName ? `, ${biz.ownerName}` : ''}`}</h1>
+                  <p>{lang === 'hi' ? 'आज अपने बिज़नेस का हिसाब एक नज़र में देखें।' : 'Here is your business snapshot. Keep every rupee accounted for.'}</p>
+                </div>
+                <div className="rokdo-welcome-actions">
+                  <button onClick={() => setShowQuotationModal(true)} className="rokdo-secondary-action">＋ {t.newQuotation}</button>
+                  <button onClick={() => setShowOrderModal(true)} className="rokdo-primary-action">＋ {t.newOrder}</button>
+                </div>
+                <div className="rokdo-welcome-mark" aria-hidden="true">R</div>
+              </section>
+              <div className="rokdo-section-heading"><div><span className="rokdo-eyebrow">AT A GLANCE</span><h2>{lang === 'hi' ? 'वित्तीय सारांश' : 'Financial summary'}</h2></div><span className="rokdo-live-pill"><i></i>{lang === 'hi' ? 'लाइव अवलोकन' : 'Live overview'}</span></div>
               {/* Financial KPI Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-5">
                 <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
