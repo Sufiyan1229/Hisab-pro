@@ -1,0 +1,22 @@
+ROKDO — Phase 1 working rebuild
+Tagline: Aapka Digital Accountant
+Theme: Navy Blue + Gold + White
+
+Implemented in this package:
+- Rebranded app title, app name, tagline, theme color and favicon.
+- Added ROKDO SVG logo and mark in /public.
+- Renamed React root component to RokdoApp.
+- Removed fictional demo business, customers, orders, quotations, payments, expenses and sample account balances from fresh installs.
+- Replaced hardcoded dashboard/report dates with current dates.
+- Corrected monthly sales and monthly target calculations to use current-month orders.
+- Added inline “Add new customer” fields to the quotation form.
+- Changed package name to rokdo.
+
+Important launch blockers (not represented as completed):
+- Firebase Phone OTP UI/auth flow is not yet integrated in this build.
+- Firestore data persistence and tenant-isolation rules are not yet implemented.
+- Real payment gateway/subscription verification is not implemented.
+- PDF generation needs a dedicated tested implementation; existing print actions still use browser print.
+- Existing browser localStorage data is preserved; this package does not erase existing data.
+
+Do not treat this build as production-ready or enter real customer financial data until authentication, database security, accounting calculations and backups are implemented and tested.

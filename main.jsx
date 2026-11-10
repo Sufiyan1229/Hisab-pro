@@ -205,7 +205,7 @@ const dict = {
   },
   hi: {
     appName: "ROKDO",
-    tagline: "Aapka Digital Accountant",
+    tagline: "आपका डिजिटल अकाउंटेंट",
     navDashboard: "डैशबोर्ड",
     navCustomers: "ग्राहक",
     navOrders: "ऑर्डर्स",
@@ -280,7 +280,7 @@ const formatDateIndian = (dateStr) => {
 // ============================================================================
 // 3. MAIN APPLICATION ROOT COMPONENT
 // ============================================================================
-function HisabProEnterprise() {
+function RokdoApp() {
   const [lang, setLang] = useState(() => localStorage.getItem('hp_lang') || 'en');
   const t = dict[lang];
 
@@ -293,18 +293,18 @@ function HisabProEnterprise() {
   const [biz, setBiz] = useState(() => {
     const s = localStorage.getItem('hp_biz');
     return s ? JSON.parse(s) : {
-      name: 'Bharat Udyog & Traders',
-      ownerName: 'Rajesh Sharma',
-      phone: '9820098200',
-      whatsapp: '9820098200',
-      email: 'contact@bharatudyog.in',
-      address: 'Plot 42, GIDC Industrial Estate',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400703',
-      gstin: '27AABCU9603R1ZM',
-      pan: 'AABCU9603R',
-      businessType: 'Manufacturer & Wholesaler',
+      name: 'My Business',
+      ownerName: '',
+      phone: '',
+      whatsapp: '',
+      email: '',
+      address: '',
+      city: '',
+      state: 'Gujarat',
+      pincode: '',
+      gstin: '',
+      pan: '',
+      businessType: '',
       salesTargetMonthly: 600000,
       logoUrl: '',
       defaultTemplate: 'template1',
@@ -315,55 +315,36 @@ function HisabProEnterprise() {
   // User State
   const [user] = useState(() => {
     const s = localStorage.getItem('hp_user');
-    return s ? JSON.parse(s) : { name: 'Rajesh Sharma', email: 'rajesh@bharatudyog.in' };
+    return s ? JSON.parse(s) : { name: '', email: '' };
   });
 
   // Financial Datasets
   const [customers, setCustomers] = useState(() => {
     const s = localStorage.getItem('hp_customers');
-    return s ? JSON.parse(s) : [
-      { id: 'c1', name: 'Ramesh Patel (Patel Furnishings)', mobile: '9876543210', email: 'patel@furnish.in', city: 'Surat', totalPurchases: 185000, totalReceived: 145000, outstandingBalance: 40000 },
-      { id: 'c2', name: 'Suresh Sharma (National Traders)', mobile: '9123456780', email: 'suresh@national.in', city: 'Mumbai', totalPurchases: 95000, totalReceived: 95000, outstandingBalance: 0 },
-      { id: 'c3', name: 'Vikram Singh (Apex Construction)', mobile: '9988776655', email: 'vikram@apex.in', city: 'Pune', totalPurchases: 320000, totalReceived: 210000, outstandingBalance: 110000 }
-    ];
+    return s ? JSON.parse(s) : [];
   });
 
   const [orders, setOrders] = useState(() => {
     const s = localStorage.getItem('hp_orders');
-    return s ? JSON.parse(s) : [
-      { id: 'o1', orderNumber: 'ORD-2026-001', customerId: 'c1', customerName: 'Ramesh Patel (Patel Furnishings)', customerMobile: '9876543210', orderDate: '2026-11-01', items: [{ name: 'Industrial Heavy Rack 2000x900', qty: 2, rate: 25000, taxPercent: 18, total: 59000 }], subtotal: 50000, taxTotal: 9000, grandTotal: 59000, advancePaid: 25000, remainingBalance: 34000, status: 'in_progress', template: 'template1' },
-      { id: 'o2', orderNumber: 'ORD-2026-002', customerId: 'c2', customerName: 'Suresh Sharma (National Traders)', customerMobile: '9123456780', orderDate: '2026-11-04', items: [{ name: 'Executive Teak Office Desk', qty: 4, rate: 12000, taxPercent: 12, total: 53760 }], subtotal: 48000, taxTotal: 5760, grandTotal: 53760, advancePaid: 53760, remainingBalance: 0, status: 'ready', template: 'template2' }
-    ];
+    return s ? JSON.parse(s) : [];
   });
 
   const [quotations, setQuotations] = useState(() => {
     const s = localStorage.getItem('hp_quotations');
-    return s ? JSON.parse(s) : [
-      { id: 'q1', quoteNumber: 'QTE-2026-101', customerId: 'c1', customerName: 'Ramesh Patel (Patel Furnishings)', customerMobile: '9876543210', quoteDate: '2026-11-02', validUntil: '2026-11-17', items: [{ name: 'Powder Coated Display Units', qty: 6, rate: 8500, taxPercent: 18, total: 60180 }], subtotal: 51000, taxTotal: 9180, grandTotal: 60180, status: 'sent', template: 'template2' }
-    ];
+    return s ? JSON.parse(s) : [];
   });
 
   const [payments, setPayments] = useState(() => {
     const s = localStorage.getItem('hp_payments');
-    return s ? JSON.parse(s) : [
-      { id: 'p1', receiptNumber: 'REC-8841', customerId: 'c1', customerName: 'Ramesh Patel', amount: 25000, method: 'bank_transfer', date: '2026-11-01' }
-    ];
+    return s ? JSON.parse(s) : [];
   });
 
   const [expenses, setExpenses] = useState(() => {
     const s = localStorage.getItem('hp_expenses');
-    return s ? JSON.parse(s) : [
-      { id: 'e1', title: 'Factory Shed Lease (Bhiwandi)', category: 'Rent', amount: 35000, date: '2026-11-01' },
-      { id: 'e2', title: 'Commercial Mild Steel Plates', category: 'Material', amount: 48000, date: '2026-11-03' },
-      { id: 'e3', title: 'Machine Operator Wages', category: 'Labour', amount: 22000, date: '2026-11-05' }
-    ];
+    return s ? JSON.parse(s) : [];
   });
 
-  const [accounts] = useState([
-    { id: 'acc_cash', name: 'Primary Cash Chest (गल्ला)', currentBalance: 42500, type: 'Cash' },
-    { id: 'acc_bank', name: 'HDFC Current A/C (...8812)', currentBalance: 312000, type: 'Bank' },
-    { id: 'acc_upi', name: 'Merchant UPI Settlement', currentBalance: 24300, type: 'UPI' }
-  ]);
+  const accounts = []; // Accounts are shown only after real account balances are configured.
 
   // Modals & References
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -371,14 +352,17 @@ function HisabProEnterprise() {
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [quoteNewCustomer, setQuoteNewCustomer] = useState(false);
 
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerActiveTab, setCustomerActiveTab] = useState('overview');
   const [activeDocument, setActiveDocument] = useState(null);
   const [docTemplateOverride, setDocTemplateOverride] = useState(null);
 
-  const [reportDateFrom, setReportDateFrom] = useState('2026-11-01');
-  const [reportDateTo, setReportDateTo] = useState('2026-11-06');
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const monthStartISO = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01`;
+  const [reportDateFrom, setReportDateFrom] = useState(monthStartISO);
+  const [reportDateTo, setReportDateTo] = useState(todayISO);
 
   // Persistence
   useEffect(() => { localStorage.setItem('hp_lang', lang); }, [lang]);
@@ -402,16 +386,19 @@ function HisabProEnterprise() {
 
   // Financial Metrics Engine
   const metrics = useMemo(() => {
-    const today = '2026-11-06';
-    const todaySales = orders.filter(o => o.orderDate === today).reduce((sum, o) => sum + o.grandTotal, 0);
-    const totalSales = orders.reduce((sum, o) => sum + o.grandTotal, 0);
-    const totalReceived = payments.reduce((sum, p) => sum + p.amount, 0) + orders.reduce((sum, o) => sum + (o.advancePaid || 0), 0);
+    const today = new Date().toISOString().slice(0, 10);
+    const monthPrefix = today.slice(0, 7);
+    const todaySales = orders.filter(o => o.orderDate === today).reduce((sum, o) => sum + Number(o.grandTotal || 0), 0);
+    const totalSales = orders.reduce((sum, o) => sum + Number(o.grandTotal || 0), 0);
+    const monthlySales = orders.filter(o => (o.orderDate || '').startsWith(monthPrefix)).reduce((sum, o) => sum + Number(o.grandTotal || 0), 0);
+    // Advances are already recorded against orders; count them once alongside later receipts.
+    const totalReceived = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0) + orders.reduce((sum, o) => sum + Number(o.advancePaid || 0), 0);
     const pendingDue = customers.reduce((sum, c) => sum + (c.outstandingBalance || 0), 0);
     const totalExp = expenses.reduce((sum, e) => sum + e.amount, 0);
     const estimatedProfit = totalSales - totalExp;
-    const targetProgress = Math.min(100, Math.round((totalSales / (biz.salesTargetMonthly || 500000)) * 100));
+    const targetProgress = Math.min(100, Math.round((monthlySales / (biz.salesTargetMonthly || 500000)) * 100));
 
-    return { todaySales, totalSales, totalReceived, pendingDue, totalExp, estimatedProfit, targetProgress };
+    return { todaySales, totalSales, monthlySales, totalReceived, pendingDue, totalExp, estimatedProfit, targetProgress };
   }, [orders, payments, customers, expenses, biz]);
 
   // Customer Ledger Generator
@@ -504,13 +491,13 @@ function HisabProEnterprise() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6FA] flex flex-col md:flex-row font-sans text-[#202B3C]">
+    <div className="min-h-screen bg-[#F7F8FB] flex flex-col md:flex-row font-sans text-[#202B3C]">
       
       {/* DESKTOP SIDEBAR */}
       <aside className={`hidden md:flex flex-col bg-[#101D35] text-white border-r border-[#142542] transition-all duration-200 z-30 sticky top-0 h-screen ${sidebarCollapsed ? 'w-20' : 'w-64'}`}>
         <div className="p-4 flex items-center justify-between border-b border-[#172B4D]">
           <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-[#C9A04A] text-[#101D35] font-black flex items-center justify-center text-xl shrink-0 shadow-md">H</div>
+            <div className="w-10 h-10 rounded-xl bg-[#C9A04A] text-[#101D35] font-black flex items-center justify-center text-xl shrink-0 shadow-md">R</div>
             {!sidebarCollapsed && (
               <div className="truncate">
                 <div className="font-bold text-sm tracking-tight leading-tight">{biz.name}</div>
@@ -681,7 +668,7 @@ function HisabProEnterprise() {
                 <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
                   <div className="text-xs font-semibold text-[#788397]">{t.todaySales}</div>
                   <div className="text-xl md:text-2xl font-black text-[#202B3C] mt-2">{formatINR(metrics.todaySales)}</div>
-                  <div className="text-[11px] text-[#788397] mt-1">{t.monthlySales}: <span className="font-semibold">{formatINR(metrics.totalSales)}</span></div>
+                  <div className="text-[11px] text-[#788397] mt-1">{t.monthlySales}: <span className="font-semibold">{formatINR(metrics.monthlySales)}</span></div>
                 </div>
 
                 <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -710,7 +697,7 @@ function HisabProEnterprise() {
                     <span className="w-2 h-2 rounded-full bg-[#C9A04A]"></span>
                     <span>{t.monthlyTarget}</span>
                   </span>
-                  <span className="text-[#101D35]">{formatINR(metrics.totalSales)} / {formatINR(biz.salesTargetMonthly)} ({metrics.targetProgress}%)</span>
+                  <span className="text-[#101D35]">{formatINR(metrics.monthlySales)} / {formatINR(biz.salesTargetMonthly)} ({metrics.targetProgress}%)</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                   <div className="bg-[#101D35] h-2.5 rounded-full transition-all duration-500" style={{ width: `${metrics.targetProgress}%` }}></div>
@@ -722,7 +709,7 @@ function HisabProEnterprise() {
                 <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
                   <h3 className="text-xs font-bold uppercase tracking-wider mb-4 flex items-center justify-between">
                     <span>{t.salesTrend}</span>
-                    <span className="text-emerald-600 font-bold">{formatINR(metrics.totalSales)} Total</span>
+                    <span className="text-emerald-600 font-bold">{formatINR(metrics.monthlySales)} This month</span>
                   </h3>
                   <div className="h-44 w-full flex items-end justify-between pt-6 px-2 gap-2">
                     {[
@@ -1349,7 +1336,7 @@ function HisabProEnterprise() {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `HISAB_PRO_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
+                    a.download = `ROKDO_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
                     a.click();
                   }}
                   className="px-4 py-2 rounded-xl border border-[#101D35] text-[#101D35] font-bold text-xs hover:bg-slate-50 flex items-center space-x-1.5"
@@ -1888,8 +1875,15 @@ function HisabProEnterprise() {
               e.preventDefault();
               const f = new FormData(e.currentTarget);
               const custId = f.get('custId');
-              const cust = customers.find(c => c.id === custId);
-              if (!cust) return alert("Select customer");
+              let cust = customers.find(c => c.id === custId);
+              if (custId === '__new__') {
+                const customerName = String(f.get('newCustomerName') || '').trim();
+                const customerMobile = String(f.get('newCustomerMobile') || '').trim();
+                if (!customerName) return alert('Enter customer name');
+                cust = { id: 'c_' + Date.now(), name: customerName, mobile: customerMobile, email: '', city: '', totalPurchases: 0, totalReceived: 0, outstandingBalance: 0 };
+                setCustomers(prev => [cust, ...prev]);
+              }
+              if (!cust) return alert("Select or add a customer");
               const qty = Number(f.get('qty') || 1);
               const rate = Number(f.get('rate') || 0);
               const taxPct = Number(f.get('tax') || 0);
@@ -1916,13 +1910,19 @@ function HisabProEnterprise() {
 
               setQuotations([newQuote, ...quotations]);
               setShowQuotationModal(false);
+              setQuoteNewCustomer(false);
             }} className="space-y-3">
               <div>
                 <label className="text-xs font-semibold block mb-1">{t.navCustomers} *</label>
-                <select name="custId" required className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white">
+                <select name="custId" required onChange={(e) => setQuoteNewCustomer(e.target.value === '__new__')} className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white">
                   <option value="">Select customer...</option>
                   {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  <option value="__new__">＋ Add new customer</option>
                 </select>
+                {quoteNewCustomer && <div className="grid grid-cols-2 gap-2 mt-2">
+                  <input name="newCustomerName" required placeholder="New customer name" className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200" />
+                  <input name="newCustomerMobile" inputMode="numeric" placeholder="Mobile number" className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200" />
+                </div>}
               </div>
               <div>
                 <label className="text-xs font-semibold block mb-1">{t.itemDescription} *</label>
@@ -2089,7 +2089,6 @@ function HisabProEnterprise() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HisabProEnterprise />
+    <RokdoApp />
   </React.StrictMode>
 );
-```
