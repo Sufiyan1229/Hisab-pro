@@ -17,25 +17,26 @@ import {
   setDoc 
 } from 'firebase/firestore';
 
-// ==========================================
-// 1. FIREBASE CONFIG (hisab-pro-9ec11)
-// ==========================================
+// ============================================================================
+// 1. CONFIRMED FIREBASE CONFIGURATION
+// ============================================================================
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBzO-YnTPbihJ8yeFCoZJiYYcQZ_DEMO",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "hisab-pro-9ec11.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "hisab-pro-9ec11",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "hisab-pro-9ec11.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1054178505501",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1054178505501:web:96144865187fa541"
+  apiKey: "AIzaSyBzO-YnTPbihJ8yeFCoZJiYYcQZiPmHZfY",
+  authDomain: "hisab-pro-9ec11.firebaseapp.com",
+  projectId: "hisab-pro-9ec11",
+  storageBucket: "hisab-pro-9ec11.firebasestorage.app",
+  messagingSenderId: "154476783962",
+  appId: "1:154476783962:web:b2de91981ab5cff45eeb63",
+  measurementId: "G-3EVYR17DZM"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ==========================================
-// 2. MULTI-TENANT FIRESTORE & OFFLINE ENGINE
-// ==========================================
+// ============================================================================
+// 2. MULTI-TENANT FIRESTORE & LOCAL STORAGE ADAPTER
+// ============================================================================
 const formatINR = (amt) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amt || 0);
 
 const formatDateIndian = (d) => {
@@ -106,9 +107,9 @@ const DB = {
   }
 };
 
-// ==========================================
-// 3. ICONS & DICTIONARY
-// ==========================================
+// ============================================================================
+// 3. ICONS & BILINGUAL DICTIONARY
+// ============================================================================
 const Icons = {
   Dashboard: ({ c = "w-5 h-5" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>,
   Customers: ({ c = "w-5 h-5" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
@@ -195,9 +196,9 @@ const dict = {
   }
 };
 
-// ==========================================
-// 4. MAIN APP COMPONENT
-// ==========================================
+// ============================================================================
+// 4. MAIN ROKDO COMPONENT
+// ============================================================================
 function RokdoApp() {
   const [lang, setLang] = useState(() => localStorage.getItem('rokdo_lang') || 'en');
   const t = dict[lang];
