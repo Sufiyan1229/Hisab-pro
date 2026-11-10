@@ -140,8 +140,8 @@ const Icons = {
 // ============================================================================
 const dict = {
   en: {
-    appName: "HISAB PRO",
-    tagline: "Smart Business. Simple Hisab.",
+    appName: "ROKDO",
+    tagline: "Aapka Digital Accountant",
     navDashboard: "Dashboard",
     navCustomers: "Customers",
     navOrders: "Orders",
@@ -204,8 +204,8 @@ const dict = {
     validUntil: "Valid Until"
   },
   hi: {
-    appName: "हिसाब प्रो",
-    tagline: "स्मार्ट व्यापार. सरल हिसाब.",
+    appName: "ROKDO",
+    tagline: "Aapka Digital Accountant",
     navDashboard: "डैशबोर्ड",
     navCustomers: "ग्राहक",
     navOrders: "ऑर्डर्स",
@@ -1219,7 +1219,7 @@ function HisabProEnterprise() {
                 <h3 className="font-bold text-sm text-[#101D35]">Frequently Asked Questions (FAQ)</h3>
                 <div className="divide-y divide-slate-100 text-xs space-y-3">
                   {[
-                    { q: "Is GSTIN registration mandatory to use HISAB PRO?", a: "No. GSTIN is completely optional. Small traders, shopkeepers, and un-registered fabricators can generate professional commercial bills without GST." },
+                    { q: "Is GSTIN registration mandatory to use ROKDO?", a: "No. GSTIN is completely optional. Small traders, shopkeepers, and un-registered fabricators can generate professional commercial bills without GST." },
                     { q: "How do internal bank transfers affect my profit?", a: "Internal transfers between Cash and Bank accounts only balance your cash assets; they are completely isolated from your Profit & Loss calculations." },
                     { q: "Can I customize which template is used for invoices?", a: "Yes. In the Settings or Business Profile section, choose your preferred default from the 4 templates. You can also override it for individual invoices." },
                     { q: "How are quotations converted into orders?", a: "Open any quotation under the Quotations tab and click 'Convert to Live Order'. It instantly books the order, updates customer ledger balances, and creates an invoice." }
