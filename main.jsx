@@ -53,7 +53,7 @@ const DB = {
     try {
       const snap = await getDoc(doc(db, 'users', uid));
       if (snap.exists()) return snap.data();
-    } catch (e) { console.warn("Firestore getUser fallback", e); }
+    } catch (e) {}
     const l = localStorage.getItem(`rokdo_u_${uid}`);
     return l ? JSON.parse(l) : null;
   },
@@ -134,9 +134,8 @@ const Icons = {
   Plus: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
   WhatsApp: ({ c = "w-4 h-4" }) => <svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.72 4.31 3.81.6.26 1.07.42 1.44.54.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.22-.17-.47-.29"/></svg>,
   Print: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>,
-  Download: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  Download: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>,
   Trash: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
-  Edit: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
   Close: ({ c = "w-5 h-5" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
   LogOut: ({ c = "w-4 h-4" }) => <svg className={c} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
 };
@@ -168,7 +167,7 @@ const dict = {
     addSupplier: "Add Supplier",
     recordPayment: "Record Payment",
     addExpense: "Add Expense",
-    convertToOrder: "Convert to Live Order",
+    convertToOrder: "Convert to Order",
     save: "Save Record",
     cancel: "Cancel",
     logout: "Log Out",
@@ -215,7 +214,7 @@ const dict = {
 };
 
 // ============================================================================
-// 4. MAIN ROKDO ENTERPRISE APPLICATION
+// 4. MAIN ROKDO APPLICATION COMPONENT
 // ============================================================================
 function RokdoApplication() {
   const [lang, setLang] = useState(() => localStorage.getItem('rokdo_lang') || 'en');
@@ -230,18 +229,18 @@ function RokdoApplication() {
   const [authErr, setAuthErr] = useState('');
   const [isOnboarding, setIsOnboarding] = useState(false);
 
-  // Business Context
+  // Business Profile Context
   const [bizId, setBizId] = useState(() => localStorage.getItem('rokdo_bId') || '');
   const [biz, setBiz] = useState({
-    name: 'Bharat Udyog & Traders',
+    name: 'A S FURNITURE',
     ownerName: 'Vikas Sharma',
-    phone: '',
-    address: 'APMC Market Phase 2',
+    phone: '+919664819415',
+    address: 'Shop 12, Industrial Area',
     city: 'Mumbai',
     state: 'Maharashtra',
     pincode: '400703',
     gstin: '',
-    businessType: 'Trader & Distributor',
+    businessType: 'Furniture Manufacturer',
     salesTargetMonthly: 500000,
     defaultTemplate: 'template1'
   });
@@ -249,7 +248,7 @@ function RokdoApplication() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Primary Datasets
+  // Datasets
   const [customers, setCustomers] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -266,19 +265,18 @@ function RokdoApplication() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
 
-  // Edit State Targets
-  const [editingCustomer, setEditingCustomer] = useState(null);
-  const [editingOrder, setEditingOrder] = useState(null);
-  const [orderPaymentTarget, setOrderPaymentTarget] = useState(null);
+  // Targets for Ledger & Invoices
   const [selectedCustLedger, setSelectedCustLedger] = useState(null);
+  const [orderPaymentTarget, setOrderPaymentTarget] = useState(null);
   const [activeInvoiceDoc, setActiveInvoiceDoc] = useState(null);
-  const [docTemplateOverride, setDocTemplateOverride] = useState('template1');
+  const [selectedTemplate, setSelectedTemplate] = useState('template1');
+  const [isPrinting, setIsPrinting] = useState(false);
 
-  // Reports Filter Range
+  // Reports Date Filter
   const [reportFrom, setReportFrom] = useState('2026-11-01');
   const [reportTo, setReportTo] = useState('2026-11-15');
 
-  // Load Session & User Data
+  // Load Session Listener
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
@@ -293,7 +291,7 @@ function RokdoApplication() {
         } else {
           const b = await DB.getBiz(resolvedBizId);
           if (b) setBiz(b);
-          await reloadAllData(resolvedBizId);
+          await reloadAll(resolvedBizId);
         }
       } else {
         setCurrentUser(null);
@@ -305,7 +303,7 @@ function RokdoApplication() {
     return () => unsub();
   }, []);
 
-  const reloadAllData = async (bId) => {
+  const reloadAll = async (bId) => {
     const [c, s, o, q, p, e, a] = await Promise.all([
       DB.getList(bId, 'customers'),
       DB.getList(bId, 'suppliers'),
@@ -315,7 +313,6 @@ function RokdoApplication() {
       DB.getList(bId, 'expenses'),
       DB.getList(bId, 'accounts')
     ]);
-
     setCustomers(c);
     setSuppliers(s);
     setOrders(o);
@@ -324,25 +321,42 @@ function RokdoApplication() {
     setExpenses(e);
 
     if (a.length === 0) {
-      const initialAccounts = [
+      const defAccs = [
         { id: 'acc_cash', name: 'Cash in Hand (गल्ला)', currentBalance: 15000, type: 'Cash' },
-        { id: 'acc_bank', name: 'Current Bank Account', currentBalance: 85000, type: 'Bank' },
+        { id: 'acc_bank', name: 'Current Bank A/C', currentBalance: 85000, type: 'Bank' },
         { id: 'acc_upi', name: 'Shop UPI Register', currentBalance: 12000, type: 'UPI' }
       ];
-      for (const item of initialAccounts) {
+      for (const item of defAccs) {
         await DB.saveItem(bId, 'accounts', item.id, item, 'system');
       }
-      setAccounts(initialAccounts);
+      setAccounts(defAccs);
     } else {
       setAccounts(a);
     }
   };
 
-  // Safe Phone OTP Handlers
+  // Safe Instant Print Trigger (Non-blocking for Safari)
+  const triggerPrintFast = () => {
+    setIsPrinting(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrinting(false);
+    }, 80);
+  };
+
+  // WhatsApp Document Dispatcher
+  const sendWhatsAppDocument = (docItem, isQuote = false) => {
+    const prefix = isQuote ? "QUOTATION" : "TAX INVOICE";
+    const ref = isQuote ? docItem.quoteNumber : docItem.orderNumber;
+    const text = `*${prefix}: ${ref}*\n*${biz.name}*\nBilled to: ${docItem.customerName}\nTotal Amount: ${formatINR(docItem.grandTotal)}\n${!isQuote ? `Advance Paid: ${formatINR(docItem.advancePaid || 0)}\nBalance Due: ${formatINR(docItem.remainingBalance || 0)}\nStatus: ${(docItem.status || 'PENDING').toUpperCase()}\n` : `Valid Until: ${formatDateIndian(docItem.validUntil)}\n`}\nContact: ${biz.phone}`;
+    window.open(`https://wa.me/91${docItem.customerMobile.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  // Phone Auth Handlers
   const sendOtpHandler = async (e) => {
     e.preventDefault();
     setAuthErr('');
-    if (phone.length < 10) return setAuthErr('Enter a valid 10-digit mobile number');
+    if (phone.length < 10) return setAuthErr('Enter a valid 10-digit number');
 
     try {
       if (window.recaptchaVerifier) {
@@ -358,7 +372,7 @@ function RokdoApplication() {
       window.confResult = conf;
       setOtpSent(true);
     } catch (err) {
-      setAuthErr(err.message || 'OTP dispatch failed. Check Firebase Phone Provider.');
+      setAuthErr(err.message || 'OTP dispatch failed.');
       if (window.recaptchaVerifier) {
         try { window.recaptchaVerifier.clear(); } catch (e) {}
         window.recaptchaVerifier = null;
@@ -388,7 +402,7 @@ function RokdoApplication() {
     await DB.saveBiz(bId, bData);
     setBiz(bData);
     setIsOnboarding(false);
-    await reloadAllData(bId);
+    await reloadAll(bId);
   };
 
   // Calculations
@@ -405,7 +419,7 @@ function RokdoApplication() {
     return { todaySales, totalSales, totalReceived, pendingDue, totalExp, estimatedProfit, targetProgress };
   }, [orders, payments, customers, expenses, biz]);
 
-  // Order Multi-Payment & Balance Updater
+  // Subsequent Payment Installment to Order
   const applyPaymentToOrder = async (orderId, paymentAmount, paymentMethod, paymentNotes = '') => {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
@@ -424,10 +438,8 @@ function RokdoApplication() {
       notes: paymentNotes
     };
 
-    // Save Payment Entry
     await DB.saveItem(bizId, 'payments', payItem.id, payItem, currentUser.uid);
 
-    // Compute New Order Balances & Progression
     const orderPayments = [...payments.filter(p => p.orderId === order.id), payItem];
     const totalReceivedOnOrder = orderPayments.reduce((sum, p) => sum + p.amount, 0);
     const newRemainingBalance = Math.max(0, order.grandTotal - totalReceivedOnOrder);
@@ -441,7 +453,6 @@ function RokdoApplication() {
     };
     await DB.saveItem(bizId, 'orders', order.id, updatedOrder, currentUser.uid);
 
-    // Adjust Customer Account
     const cust = customers.find(c => c.id === order.customerId);
     if (cust) {
       cust.totalReceived = (cust.totalReceived || 0) + paymentAmount;
@@ -449,14 +460,42 @@ function RokdoApplication() {
       await DB.saveItem(bizId, 'customers', cust.id, cust, currentUser.uid);
     }
 
-    // Adjust Financial Account
     const targetAcc = accounts.find(a => a.type.toLowerCase() === paymentMethod.toLowerCase()) || accounts[0];
     if (targetAcc) {
       targetAcc.currentBalance = (targetAcc.currentBalance || 0) + paymentAmount;
       await DB.saveItem(bizId, 'accounts', targetAcc.id, targetAcc, currentUser.uid);
     }
 
-    await reloadAllData(bizId);
+    await reloadAll(bizId);
+  };
+
+  // Convert Quotation into Order
+  const convertQuote = async (q) => {
+    const ord = {
+      id: 'ord_' + Date.now(),
+      orderNumber: 'ORD-' + String(Date.now()).slice(-5),
+      customerId: q.customerId,
+      customerName: q.customerName,
+      customerMobile: q.customerMobile,
+      orderDate: new Date().toISOString().slice(0, 10),
+      items: q.items,
+      grandTotal: q.grandTotal,
+      advancePaid: 0,
+      remainingBalance: q.grandTotal,
+      status: 'pending'
+    };
+    await DB.saveItem(bizId, 'orders', ord.id, ord, currentUser.uid);
+    await DB.saveItem(bizId, 'quotations', q.id, { ...q, status: 'accepted' }, currentUser.uid);
+
+    const cust = customers.find(c => c.id === q.customerId);
+    if (cust) {
+      cust.totalPurchases = (cust.totalPurchases || 0) + q.grandTotal;
+      cust.outstandingBalance = (cust.outstandingBalance || 0) + q.grandTotal;
+      await DB.saveItem(bizId, 'customers', cust.id, cust, currentUser.uid);
+    }
+    await reloadAll(bizId);
+    alert('Quotation converted to live Order!');
+    setActiveTab('orders');
   };
 
   // Customer Ledger
@@ -466,25 +505,10 @@ function RokdoApplication() {
     const ledger = [];
 
     custOrders.forEach(o => {
-      ledger.push({
-        id: 'ord_' + o.id,
-        date: o.orderDate,
-        desc: `Sales Order (${o.orderNumber})`,
-        debit: o.grandTotal,
-        credit: 0,
-        ref: o.orderNumber
-      });
+      ledger.push({ id: 'ord_' + o.id, date: o.orderDate, desc: `Order (${o.orderNumber})`, debit: o.grandTotal, credit: 0 });
     });
-
     custPayments.forEach(p => {
-      ledger.push({
-        id: 'pay_' + p.id,
-        date: p.date,
-        desc: `Payment Received (${p.method.toUpperCase()}) - ${p.receiptNumber}`,
-        debit: 0,
-        credit: p.amount,
-        ref: p.receiptNumber
-      });
+      ledger.push({ id: 'pay_' + p.id, date: p.date, desc: `Payment (${p.method}) - ${p.receiptNumber}`, debit: 0, credit: p.amount });
     });
 
     ledger.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -493,64 +517,14 @@ function RokdoApplication() {
       running += (entry.debit - entry.credit);
       entry.runningBalance = running;
     });
-
     return ledger.reverse();
-  };
-
-  // Convert Quotation into Order
-  const convertQuotationToOrder = async (quote) => {
-    const newOrd = {
-      id: 'ord_' + Date.now(),
-      orderNumber: 'ORD-' + String(Date.now()).slice(-5),
-      customerId: quote.customerId,
-      customerName: quote.customerName,
-      customerMobile: quote.customerMobile,
-      orderDate: new Date().toISOString().slice(0, 10),
-      items: quote.items,
-      subtotal: quote.subtotal,
-      taxTotal: quote.taxTotal,
-      grandTotal: quote.grandTotal,
-      advancePaid: 0,
-      remainingBalance: quote.grandTotal,
-      status: 'pending',
-      template: quote.template || biz.defaultTemplate
-    };
-
-    await DB.saveItem(bizId, 'orders', newOrd.id, newOrd, currentUser.uid);
-    await DB.saveItem(bizId, 'quotations', quote.id, { ...quote, status: 'accepted' }, currentUser.uid);
-
-    const cust = customers.find(c => c.id === quote.customerId);
-    if (cust) {
-      cust.totalPurchases = (cust.totalPurchases || 0) + quote.grandTotal;
-      cust.outstandingBalance = (cust.outstandingBalance || 0) + quote.grandTotal;
-      await DB.saveItem(bizId, 'customers', cust.id, cust, currentUser.uid);
-    }
-
-    await reloadAllData(bizId);
-    alert(lang === 'hi' ? "कोटेशन ऑर्डर में बदल गया!" : "Quotation converted to live Order!");
-    setActiveTab('orders');
-  };
-
-  // WhatsApp Document Sender
-  const sendWhatsAppDocument = (docItem, isQuote = false) => {
-    const prefix = isQuote ? t.quotationDoc : t.taxInvoice;
-    const ref = isQuote ? docItem.quoteNumber : docItem.orderNumber;
-    const text = `*${prefix}: ${ref}*\n${lang === 'hi' ? 'नमस्ते' : 'Dear'} ${docItem.customerName},\n${lang === 'hi' ? 'दस्तावेज विवरण' : 'Commercial document summary from'} *${biz.name}*:\n\n*Items:* ${docItem.items ? docItem.items.map(i => `${i.name} (x${i.qty})`).join(', ') : 'Details'}\n*Grand Total:* ${formatINR(docItem.grandTotal)}\n${!isQuote ? `*Advance Paid:* ${formatINR(docItem.advancePaid)}\n*Balance Due:* ${formatINR(docItem.remainingBalance)}\n*Status:* ${docItem.status ? docItem.status.toUpperCase() : 'PENDING'}\n` : `*Valid Until:* ${formatDateIndian(docItem.validUntil)}\n`}\nContact: ${biz.phone}\n${biz.name}`;
-    window.open(`https://wa.me/91${docItem.customerMobile.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   // ==========================================================================
   // VIEW: AUTHENTICATION
   // ==========================================================================
   if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#101D35] flex items-center justify-center text-white">
-        <div className="text-center space-y-3">
-          <div className="w-12 h-12 border-4 border-[#C9A04A] border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <div className="text-xs font-bold text-[#C9A04A] tracking-wider uppercase">ROKDO DIGITAL ACCOUNTANT</div>
-        </div>
-      </div>
-    );
+    return <div className="min-h-screen bg-[#101D35] flex items-center justify-center text-white text-xs font-bold">ROKDO ACCOUNTANT LOADING...</div>;
   }
 
   if (!currentUser) {
@@ -593,7 +567,7 @@ function RokdoApplication() {
       <div className="min-h-screen bg-[#101D35] flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl">
           <h2 className="text-base font-black text-[#101D35] mb-1">Set Up Your Business Workspace</h2>
-          <p className="text-xs text-slate-500 mb-4">Complete your registration to activate multi-tenant cloud storage.</p>
+          <p className="text-xs text-slate-500 mb-4">Enter firm details to activate your digital ledger.</p>
           <form onSubmit={completeOnboarding} className="space-y-3">
             <input name="owner" required placeholder="Owner / Proprietor Name *" className="w-full text-xs p-2.5 rounded-xl border" />
             <input name="firm" required placeholder="Business / Firm Name *" className="w-full text-xs p-2.5 rounded-xl border" />
@@ -605,13 +579,13 @@ function RokdoApplication() {
   }
 
   // ==========================================================================
-  // VIEW: MAIN INTERFACE
+  // VIEW: MAIN ENTERPRISE INTERFACE
   // ==========================================================================
   return (
     <div className="min-h-screen bg-[#F4F6FA] flex flex-col md:flex-row font-sans text-[#202B3C]">
       
-      {/* DESKTOP SIDEBAR */}
-      <aside className="hidden md:flex flex-col w-60 bg-[#101D35] text-white border-r border-[#142542] sticky top-0 h-screen p-4">
+      {/* SIDEBAR */}
+      <aside className="hidden md:flex flex-col w-60 bg-[#101D35] text-white border-r border-[#142542] sticky top-0 h-screen p-4 no-print">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-9 h-9 rounded-xl bg-[#C9A04A] text-[#101D35] font-black text-lg flex items-center justify-center">R</div>
           <div className="truncate">
@@ -651,11 +625,11 @@ function RokdoApplication() {
         </button>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
+      {/* MAIN CONTAINER */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-6">
         
         {/* HEADER */}
-        <header className="sticky top-0 z-20 bg-[#101D35] text-white px-4 md:px-8 py-3 flex items-center justify-between shadow-md">
+        <header className="sticky top-0 z-20 bg-[#101D35] text-white px-4 md:px-8 py-3 flex items-center justify-between shadow-md no-print">
           <div className="flex items-center space-x-2">
             <div className="w-7 h-7 rounded-lg bg-[#C9A04A] text-[#101D35] font-black text-sm flex items-center justify-center">R</div>
             <span className="font-bold text-sm tracking-tight text-white truncate max-w-[150px] sm:max-w-none">{biz.name}</span>
@@ -669,7 +643,7 @@ function RokdoApplication() {
             }} className="text-xs px-2.5 py-1 rounded-xl border border-white/20 bg-[#172B4D] text-white font-bold">
               {lang === 'en' ? '🇮🇳 हिंदी' : 'English'}
             </button>
-            <button onClick={() => { setEditingOrder(null); setShowOrderModal(true); }} className="px-3 py-1 bg-[#C9A04A] text-[#101D35] rounded-xl text-xs font-bold flex items-center space-x-1">
+            <button onClick={() => setShowOrderModal(true)} className="px-3 py-1 bg-[#C9A04A] text-[#101D35] rounded-xl text-xs font-bold flex items-center space-x-1">
               <Icons.Plus c="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{t.newOrder}</span>
             </button>
@@ -679,12 +653,13 @@ function RokdoApplication() {
           </div>
         </header>
 
-        {/* BODY TABS */}
-        <main className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-5">
+        {/* WORKSPACE TABS */}
+        <main className="p-4 md:p-8 max-w-6xl mx-auto w-full space-y-5 no-print">
           
-          {/* 1. DASHBOARD */}
+          {/* TAB 1: DASHBOARD */}
           {activeTab === 'dashboard' && (
             <>
+              {/* Financial KPI Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <div className="bg-white p-4 rounded-2xl border shadow-xs">
                   <div className="text-[11px] text-slate-400 font-semibold">{t.todaySales}</div>
@@ -708,7 +683,7 @@ function RokdoApplication() {
                 </div>
               </div>
 
-              {/* Monthly Target */}
+              {/* Target */}
               <div className="bg-white p-4 rounded-2xl border shadow-xs">
                 <div className="flex justify-between text-xs font-bold mb-2">
                   <span>{t.monthlyTarget}</span>
@@ -719,11 +694,48 @@ function RokdoApplication() {
                 </div>
               </div>
 
-              {/* Orders Feed */}
+              {/* Trajectory & Categories */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded-2xl border shadow-xs">
+                  <div className="text-xs font-bold text-[#101D35] mb-3">7-Day Sales Trajectory</div>
+                  <div className="h-32 flex items-end justify-between px-2 gap-2">
+                    {[
+                      { d: 'Mon', h: '40%' }, { d: 'Tue', h: '60%' }, { d: 'Wed', h: '35%' },
+                      { d: 'Thu', h: '75%' }, { d: 'Fri', h: '90%' }, { d: 'Sat', h: '100%' }, { d: 'Sun', h: '25%' }
+                    ].map((b, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                        <div className="w-full max-w-[24px] bg-[#101D35] hover:bg-[#C9A04A] rounded-t-lg transition-all" style={{ height: b.h }}></div>
+                        <span className="text-[9px] font-bold text-slate-400">{b.d}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border shadow-xs space-y-3">
+                  <div className="text-xs font-bold text-[#101D35]">Expense Breakdown</div>
+                  {[
+                    { cat: 'Material & Hardware', pct: 50, col: 'bg-[#101D35]' },
+                    { cat: 'Workshop Rent', pct: 30, col: 'bg-[#C9A04A]' },
+                    { cat: 'Labour Wages', pct: 20, col: 'bg-slate-400' }
+                  ].map((x, i) => (
+                    <div key={i} className="space-y-1">
+                      <div className="flex justify-between text-[11px] font-semibold">
+                        <span>{x.cat}</span>
+                        <span>{x.pct}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                        <div className={`${x.col} h-1.5 rounded-full`} style={{ width: `${x.pct}%` }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Orders Overview */}
               <div className="bg-white rounded-2xl border shadow-xs overflow-hidden">
-                <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
-                  <span className="font-bold text-xs uppercase text-[#101D35]">Recent Orders &amp; Balance Status</span>
-                  <button onClick={() => setActiveTab('orders')} className="text-xs font-bold text-[#101D35] hover:underline">View All Orders</button>
+                <div className="p-3.5 border-b flex justify-between items-center bg-slate-50/50">
+                  <span className="font-bold text-xs uppercase text-[#101D35]">Recent Billing Feed</span>
+                  <button onClick={() => setActiveTab('orders')} className="text-xs font-bold text-[#101D35] hover:underline">View All</button>
                 </div>
                 <div className="divide-y">
                   {orders.slice(0, 5).map(o => (
@@ -732,15 +744,15 @@ function RokdoApplication() {
                         <div className="font-bold text-xs">{o.customerName}</div>
                         <div className="text-[11px] text-slate-400">{o.orderNumber} • {formatDateIndian(o.orderDate)}</div>
                       </div>
-                      <div className="text-right flex items-center space-x-3">
+                      <div className="text-right flex items-center space-x-2.5">
                         <div>
                           <div className="font-black text-xs">{formatINR(o.grandTotal)}</div>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${o.status === 'paid' ? 'bg-emerald-50 text-emerald-700' : (o.status === 'partial' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700')}`}>
-                            {o.status ? o.status.toUpperCase() : 'PENDING'}
+                          <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${o.status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                            {o.status || 'PENDING'}
                           </span>
                         </div>
-                        <button onClick={() => sendWhatsAppDocument(o, false)} className="p-1.5 bg-emerald-600 text-white rounded-lg">
-                          <Icons.WhatsApp c="w-3.5 h-3.5" />
+                        <button onClick={() => setActiveInvoiceDoc(o)} className="p-1.5 border rounded-lg hover:bg-slate-50">
+                          <Icons.Print c="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
@@ -750,12 +762,12 @@ function RokdoApplication() {
             </>
           )}
 
-          {/* 2. CUSTOMERS */}
+          {/* TAB 2: CUSTOMERS */}
           {activeTab === 'customers' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <h2 className="text-sm font-bold">{t.navCustomers}</h2>
-                <button onClick={() => { setEditingCustomer(null); setShowCustomerModal(true); }} className="px-3 py-1.5 bg-[#101D35] text-white rounded-xl text-xs font-bold">+ {t.addCustomer}</button>
+                <button onClick={() => setShowCustomerModal(true)} className="px-3 py-1.5 bg-[#101D35] text-white rounded-xl text-xs font-bold">+ {t.addCustomer}</button>
               </div>
 
               <input 
@@ -771,21 +783,20 @@ function RokdoApplication() {
                   <div key={c.id} className="p-3.5 flex justify-between items-center">
                     <div>
                       <div className="font-bold text-xs">{c.name}</div>
-                      <div className="text-[11px] text-slate-400">📱 {c.mobile} {c.city ? `• ${c.city}` : ''}</div>
+                      <div className="text-[11px] text-slate-400">📱 {c.mobile}</div>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="text-right mr-2">
                         <div className="text-[10px] text-slate-400">Due</div>
                         <div className="font-black text-xs text-rose-600">{formatINR(c.outstandingBalance)}</div>
                       </div>
-                      <button onClick={() => setSelectedCustLedger(c)} className="px-2 py-1 border rounded-lg text-xs font-bold hover:bg-slate-50">Ledger</button>
-                      <button onClick={() => { setEditingCustomer(c); setShowCustomerModal(true); }} className="p-1.5 text-slate-500 hover:text-navy-deep"><Icons.Edit c="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setSelectedCustLedger(c)} className="px-2.5 py-1 border rounded-lg text-xs font-bold hover:bg-slate-50">Ledger</button>
                       <button onClick={async () => {
                         if (confirm(`Delete customer ${c.name}?`)) {
                           await DB.deleteItem(bizId, 'customers', c.id);
-                          await reloadAllData(bizId);
+                          await reloadAll(bizId);
                         }
-                      }} className="p-1.5 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
+                      }} className="p-1 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 ))}
@@ -793,7 +804,7 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 3. SUPPLIERS */}
+          {/* TAB 3: SUPPLIERS */}
           {activeTab === 'suppliers' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -803,23 +814,23 @@ function RokdoApplication() {
 
               <div className="bg-white rounded-2xl border divide-y overflow-hidden shadow-xs">
                 {suppliers.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-slate-400">No suppliers registered. Add material vendors.</div>
+                  <div className="p-6 text-center text-xs text-slate-400">No suppliers registered. Add material vendors.</div>
                 ) : (
                   suppliers.map(s => (
                     <div key={s.id} className="p-3.5 flex justify-between items-center">
                       <div>
                         <div className="font-bold text-xs">{s.name}</div>
-                        <div className="text-[11px] text-slate-400">📱 {s.mobile} • Category: {s.category || 'General'}</div>
+                        <div className="text-[11px] text-slate-400">📱 {s.mobile} • {s.category}</div>
                       </div>
                       <div className="flex items-center space-x-3">
                         <div className="text-right">
                           <div className="text-[10px] text-slate-400">Payable Due</div>
-                          <div className="font-black text-xs text-slate-900">{formatINR(s.payableBalance || 0)}</div>
+                          <div className="font-black text-xs text-slate-800">{formatINR(s.payableBalance || 0)}</div>
                         </div>
                         <button onClick={async () => {
                           if (confirm(`Delete supplier ${s.name}?`)) {
                             await DB.deleteItem(bizId, 'suppliers', s.id);
-                            await reloadAllData(bizId);
+                            await reloadAll(bizId);
                           }
                         }} className="p-1 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
                       </div>
@@ -830,12 +841,12 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 4. ORDERS & MULTI-PAYMENT MANAGEMENT */}
+          {/* TAB 4: ORDERS & MULTI-PAYMENTS */}
           {activeTab === 'orders' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <h2 className="text-sm font-bold">{t.navOrders}</h2>
-                <button onClick={() => { setEditingOrder(null); setShowOrderModal(true); }} className="px-3 py-1.5 bg-[#101D35] text-white rounded-xl text-xs font-bold">+ {t.newOrder}</button>
+                <button onClick={() => setShowOrderModal(true)} className="px-3 py-1.5 bg-[#101D35] text-white rounded-xl text-xs font-bold">+ {t.newOrder}</button>
               </div>
 
               <div className="space-y-2">
@@ -868,24 +879,21 @@ function RokdoApplication() {
                             + Add Payment
                           </button>
                         )}
-                        <button onClick={() => { setActiveInvoiceDoc(o); setDocTemplateOverride('template1'); }} className="px-2 py-1 border rounded-lg font-semibold hover:bg-slate-50">
-                          Invoice Bill
+                        <button onClick={() => setActiveInvoiceDoc(o)} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold">
+                          Print Invoice
                         </button>
-                        <button onClick={() => sendWhatsAppDocument(o, false)} className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-bold flex items-center space-x-1">
+                        <button onClick={() => sendWhatsAppDocument(o, false)} className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-bold flex items-center space-x-1">
                           <Icons.WhatsApp c="w-3.5 h-3.5" />
                           <span>WhatsApp</span>
                         </button>
                       </div>
 
-                      <div className="flex gap-1.5">
-                        <button onClick={() => { setEditingOrder(o); setShowOrderModal(true); }} className="p-1 text-slate-400 hover:text-navy-deep"><Icons.Edit c="w-3.5 h-3.5" /></button>
-                        <button onClick={async () => {
-                          if (confirm(`Delete order ${o.orderNumber}?`)) {
-                            await DB.deleteItem(bizId, 'orders', o.id);
-                            await reloadAllData(bizId);
-                          }
-                        }} className="p-1 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
-                      </div>
+                      <button onClick={async () => {
+                        if (confirm(`Delete order ${o.orderNumber}?`)) {
+                          await DB.deleteItem(bizId, 'orders', o.id);
+                          await reloadAll(bizId);
+                        }
+                      }} className="p-1 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 ))}
@@ -893,7 +901,7 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 5. QUOTATIONS */}
+          {/* TAB 5: QUOTATIONS */}
           {activeTab === 'quotations' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -912,9 +920,9 @@ function RokdoApplication() {
                     <div className="text-right flex items-center space-x-2">
                       <div className="font-black text-xs mr-2">{formatINR(q.grandTotal)}</div>
                       {q.status !== 'accepted' && (
-                        <button onClick={() => convertQuotationToOrder(q)} className="px-2.5 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg">{t.convertToOrder}</button>
+                        <button onClick={() => convertQuote(q)} className="px-2.5 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg">{t.convertToOrder}</button>
                       )}
-                      <button onClick={() => { setActiveInvoiceDoc({ ...q, docType: 'quotation' }); setDocTemplateOverride('template2'); }} className="px-2 py-1 border rounded-lg text-xs font-semibold">Print</button>
+                      <button onClick={() => { setActiveInvoiceDoc({ ...q, docType: 'quotation' }); }} className="px-2 py-1 border rounded-lg text-xs font-semibold">Print</button>
                     </div>
                   </div>
                 ))}
@@ -922,38 +930,28 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 6. PAYMENTS & COLLECTIONS */}
+          {/* TAB 6: PAYMENTS */}
           {activeTab === 'payments' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <h2 className="text-sm font-bold">{t.navPayments}</h2>
                 <button onClick={() => setShowPaymentModal(true)} className="px-3 py-1.5 bg-[#101D35] text-white rounded-xl text-xs font-bold">+ {t.recordPayment}</button>
               </div>
-
               <div className="bg-white rounded-2xl border divide-y overflow-hidden shadow-xs">
                 {payments.map(p => (
                   <div key={p.id} className="p-3.5 flex justify-between items-center">
                     <div>
                       <div className="font-bold text-xs">{p.customerName}</div>
                       <div className="text-[11px] text-slate-400">{p.receiptNumber} • {formatDateIndian(p.date)} • Mode: {p.method}</div>
-                      {p.notes && <div className="text-[10px] text-slate-500 italic mt-0.5">{p.notes}</div>}
                     </div>
-                    <div className="text-right">
-                      <div className="font-black text-emerald-600 text-sm">+{formatINR(p.amount)}</div>
-                      <button onClick={async () => {
-                        if (confirm(`Delete payment ${p.receiptNumber}?`)) {
-                          await DB.deleteItem(bizId, 'payments', p.id);
-                          await reloadAllData(bizId);
-                        }
-                      }} className="text-[10px] text-slate-400 hover:text-rose-600 block mt-1">Delete</button>
-                    </div>
+                    <div className="font-black text-emerald-600 text-sm">+{formatINR(p.amount)}</div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* 7. EXPENSES */}
+          {/* TAB 7: EXPENSES */}
           {activeTab === 'expenses' && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -967,22 +965,14 @@ function RokdoApplication() {
                       <div className="font-bold text-xs">{e.title}</div>
                       <div className="text-[11px] text-slate-400">{e.category} • {formatDateIndian(e.date)}</div>
                     </div>
-                    <div className="text-right flex items-center space-x-2">
-                      <div className="font-black text-rose-600 text-sm">-{formatINR(e.amount)}</div>
-                      <button onClick={async () => {
-                        if (confirm(`Delete expense ${e.title}?`)) {
-                          await DB.deleteItem(bizId, 'expenses', e.id);
-                          await reloadAllData(bizId);
-                        }
-                      }} className="p-1 text-slate-400 hover:text-rose-600"><Icons.Trash c="w-3.5 h-3.5" /></button>
-                    </div>
+                    <div className="font-black text-rose-600 text-sm">-{formatINR(e.amount)}</div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* 8. ACCOUNTS */}
+          {/* TAB 8: ACCOUNTS */}
           {activeTab === 'accounts' && (
             <div className="space-y-3">
               <h2 className="text-sm font-bold">{t.navAccounts}</h2>
@@ -998,7 +988,7 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 9. REPORTS */}
+          {/* TAB 9: REPORTS */}
           {activeTab === 'reports' && (
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -1019,7 +1009,7 @@ function RokdoApplication() {
                     const csv = 'data:text/csv;charset=utf-8,Order,Date,Customer,Total,Status\n' + rows.map(r => r.join(',')).join('\n');
                     const link = document.createElement('a');
                     link.href = encodeURI(csv);
-                    link.download = `ROKDO_SALES_REPORT_${reportFrom}_to_${reportTo}.csv`;
+                    link.download = `ROKDO_SALES_REPORT.csv`;
                     link.click();
                   }} className="px-3 py-1.5 bg-[#101D35] text-white rounded-lg font-bold flex items-center space-x-1.5">
                     <Icons.Download c="w-3.5 h-3.5" />
@@ -1046,9 +1036,9 @@ function RokdoApplication() {
             </div>
           )}
 
-          {/* 10. SETTINGS & PROFILE */}
+          {/* TAB 10: SETTINGS */}
           {activeTab === 'settings' && (
-            <div className="space-y-4 max-w-2xl bg-white p-5 rounded-2xl border shadow-xs text-xs">
+            <div className="space-y-4 max-w-xl bg-white p-5 rounded-2xl border shadow-xs text-xs">
               <h2 className="text-sm font-bold text-[#101D35]">Business Profile &amp; Settings</h2>
               <form onSubmit={async (e) => {
                 e.preventDefault();
@@ -1092,10 +1082,6 @@ function RokdoApplication() {
                   <label className="font-semibold block mb-1">GSTIN (Optional)</label>
                   <input name="gstin" defaultValue={biz.gstin} placeholder="Optional GST Number" className="w-full p-2 border rounded-xl uppercase" />
                 </div>
-                <div>
-                  <label className="font-semibold block mb-1">Monthly Sales Target (₹)</label>
-                  <input name="target" type="number" defaultValue={biz.salesTargetMonthly} className="w-full p-2 border rounded-xl" />
-                </div>
                 <button type="submit" className="w-full py-2.5 bg-[#101D35] text-white font-bold rounded-xl shadow">Save Settings</button>
               </form>
             </div>
@@ -1104,14 +1090,14 @@ function RokdoApplication() {
         </main>
       </div>
 
-      {/* MOBILE COMPACT BOTTOM DOCK */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t px-2 py-2 flex justify-around items-center shadow-lg">
+      {/* MOBILE BOTTOM DOCK */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t px-2 py-2 flex justify-around items-center shadow-lg no-print">
         {[
           { id: 'dashboard', l: t.navDashboard, icon: Icons.Dashboard },
           { id: 'customers', l: t.navCustomers, icon: Icons.Customers },
           { id: 'orders', l: t.navOrders, icon: Icons.Orders },
           { id: 'quotations', l: t.navQuotations, icon: Icons.Quotations },
-          { id: 'payments', l: t.navPayments, icon: Icons.Payments }
+          { id: 'reports', l: t.navReports, icon: Icons.Reports }
         ].map(n => {
           const Icon = n.icon;
           const act = activeTab === n.id;
@@ -1125,20 +1111,137 @@ function RokdoApplication() {
       </nav>
 
       {/* ==================================================================== */}
-      {/* MODAL: CREATE / EDIT ORDER                                           */}
+      {/* MODAL: A4 INVOICE SHEET (#printable-doc)                              */}
       {/* ==================================================================== */}
+      {activeInvoiceDoc && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 overflow-y-auto">
+          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-5 text-[#202B3C] space-y-4 my-6">
+            
+            <div className="no-print flex justify-between items-center pb-2 border-b">
+              <span className="text-xs font-bold text-[#101D35]">Invoice Print Preview</span>
+              <button onClick={() => setActiveInvoiceDoc(null)} className="p-1 text-slate-400 hover:text-slate-700">
+                <Icons.Close c="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* ONLY THIS ELEMENT PRINTS CLEANLY ON A4 */}
+            <div id="printable-doc" className="bg-white text-xs space-y-4 font-sans">
+              <div className="flex justify-between items-start pb-4 border-b-2 border-[#101D35]">
+                <div>
+                  <h1 className="text-xl font-black text-[#101D35] tracking-tight">{biz.name}</h1>
+                  <div className="text-slate-600 text-xs mt-1">{biz.address}, {biz.city} - {biz.pincode}</div>
+                  <div className="text-slate-600 text-xs">Ph: {biz.phone} | GST: {biz.gstin || 'Unregistered'}</div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-black uppercase tracking-wider text-[#C9A04A] bg-[#101D35] px-2.5 py-1 rounded">
+                    {activeInvoiceDoc.docType === 'quotation' ? "QUOTATION" : "TAX INVOICE"}
+                  </span>
+                  <div className="font-bold text-sm text-[#101D35] mt-1.5">{activeInvoiceDoc.orderNumber || activeInvoiceDoc.quoteNumber}</div>
+                  <div className="text-slate-500 text-xs">{formatDateIndian(activeInvoiceDoc.orderDate || activeInvoiceDoc.quoteDate)}</div>
+                </div>
+              </div>
+
+              <div className="py-2 border-b border-slate-100 flex justify-between">
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-slate-400">BILLED TO</div>
+                  <div className="font-bold text-sm text-slate-900 mt-0.5">{activeInvoiceDoc.customerName}</div>
+                  <div className="text-slate-600 text-xs">Mobile: {activeInvoiceDoc.customerMobile}</div>
+                </div>
+                <div className="text-right">
+                  <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase ${activeInvoiceDoc.remainingBalance === 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                    {activeInvoiceDoc.remainingBalance === 0 ? 'PAID IN FULL' : 'PAYMENT DUE'}
+                  </span>
+                </div>
+              </div>
+
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-slate-100 text-[#101D35] font-bold">
+                    <th className="py-2 px-2 text-left">Item Description</th>
+                    <th className="py-2 px-2 text-center">Qty</th>
+                    <th className="py-2 px-2 text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {activeInvoiceDoc.items ? activeInvoiceDoc.items.map((it, idx) => (
+                    <tr key={idx}>
+                      <td className="py-2.5 px-2 font-semibold text-slate-800">{it.name}</td>
+                      <td className="py-2.5 px-2 text-center text-slate-600">{it.qty}</td>
+                      <td className="py-2.5 px-2 text-right font-black text-slate-900">{formatINR(it.total)}</td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td className="py-2.5 px-2 font-semibold">Standard Goods Order</td>
+                      <td className="py-2.5 px-2 text-center">1</td>
+                      <td className="py-2.5 px-2 text-right font-black">{formatINR(activeInvoiceDoc.grandTotal)}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              <div className="border-t-2 border-slate-200 pt-3 space-y-1.5 text-right text-xs">
+                <div className="flex justify-between font-bold text-sm text-[#101D35]">
+                  <span>Grand Total:</span>
+                  <span>{formatINR(activeInvoiceDoc.grandTotal)}</span>
+                </div>
+                {activeInvoiceDoc.docType !== 'quotation' && (
+                  <>
+                    <div className="flex justify-between text-emerald-700 font-semibold">
+                      <span>Advance Received:</span>
+                      <span>{formatINR(activeInvoiceDoc.advancePaid || 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-rose-700 font-black text-sm border-t pt-1">
+                      <span>Balance Due:</span>
+                      <span>{formatINR(activeInvoiceDoc.remainingBalance || 0)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="pt-6 border-t border-slate-200 flex justify-between items-end text-[10px] text-slate-500">
+                <div>Terms: Goods once sold will not be taken back.</div>
+                <div className="text-right">
+                  <div className="font-bold text-slate-800">For {biz.name}</div>
+                  <div className="h-6"></div>
+                  <div className="border-t border-slate-400 pt-0.5 uppercase tracking-wider">Authorized Signatory</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="no-print flex gap-2 pt-3 border-t">
+              <button 
+                onClick={triggerPrintFast}
+                disabled={isPrinting}
+                className="flex-1 py-2.5 bg-[#101D35] hover:bg-[#172B4D] text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow"
+              >
+                <Icons.Print c="w-4 h-4" />
+                <span>{isPrinting ? "Opening..." : "Print / PDF"}</span>
+              </button>
+              <button 
+                onClick={() => sendWhatsAppDocument(activeInvoiceDoc, activeInvoiceDoc.docType === 'quotation')}
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow"
+              >
+                <Icons.WhatsApp c="w-4 h-4" />
+                <span>WhatsApp</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ORDER */}
       {showOrderModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl my-6">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-bold text-sm">{editingOrder ? "Edit Order" : t.newOrder}</h3>
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-3">
+            <div className="flex justify-between items-center pb-2 border-b">
+              <h3 className="font-bold text-sm">{t.newOrder}</h3>
               <button onClick={() => setShowOrderModal(false)}><Icons.Close c="w-4 h-4" /></button>
             </div>
             <form onSubmit={async (e) => {
               e.preventDefault();
               const f = new FormData(e.currentTarget);
-              const custId = f.get('cId');
-              const cust = customers.find(c => c.id === custId);
+              const cust = customers.find(c => c.id === f.get('cId'));
               if (!cust) return alert('Select customer');
 
               const qty = Number(f.get('qty') || 1);
@@ -1148,15 +1251,14 @@ function RokdoApplication() {
               const grandTotal = subtotal + (subtotal * taxPct) / 100;
               const advance = Number(f.get('advance') || 0);
 
-              const ordId = editingOrder ? editingOrder.id : ('ord_' + Date.now());
               const ord = {
-                id: ordId,
-                orderNumber: editingOrder ? editingOrder.orderNumber : ('ORD-' + String(Date.now()).slice(-5)),
+                id: 'ord_' + Date.now(),
+                orderNumber: 'ORD-' + String(Date.now()).slice(-5),
                 customerId: cust.id,
                 customerName: cust.name,
                 customerMobile: cust.mobile,
                 orderDate: f.get('date'),
-                items: [{ name: f.get('item'), qty, rate, taxPercent: taxPct, total: grandTotal }],
+                items: [{ name: f.get('item'), qty, rate, total: grandTotal }],
                 grandTotal,
                 advancePaid: advance,
                 remainingBalance: Math.max(0, grandTotal - advance),
@@ -1165,14 +1267,12 @@ function RokdoApplication() {
 
               await DB.saveItem(bizId, 'orders', ord.id, ord, currentUser.uid);
 
-              // Update Customer Balances
               cust.totalPurchases = (cust.totalPurchases || 0) + grandTotal;
               cust.totalReceived = (cust.totalReceived || 0) + advance;
               cust.outstandingBalance = (cust.outstandingBalance || 0) + (grandTotal - advance);
               await DB.saveItem(bizId, 'customers', cust.id, cust, currentUser.uid);
 
-              // Record Advance Payment if any
-              if (advance > 0 && !editingOrder) {
+              if (advance > 0) {
                 const payReceipt = {
                   id: 'pay_' + Date.now(),
                   receiptNumber: 'REC-' + String(Date.now()).slice(-5),
@@ -1182,30 +1282,26 @@ function RokdoApplication() {
                   customerName: cust.name,
                   amount: advance,
                   method: 'Cash',
-                  date: ord.orderDate,
-                  notes: 'Advance at order booking'
+                  date: ord.orderDate
                 };
                 await DB.saveItem(bizId, 'payments', payReceipt.id, payReceipt, currentUser.uid);
               }
 
-              await reloadAllData(bizId);
+              await reloadAll(bizId);
               setShowOrderModal(false);
             }} className="space-y-2.5">
-              <select name="cId" defaultValue={editingOrder?.customerId} required className="w-full text-xs p-2 rounded-xl border bg-white">
+              <select name="cId" required className="w-full text-xs p-2 rounded-xl border bg-white">
                 <option value="">Select customer...</option>
                 {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
-              <input name="item" defaultValue={editingOrder?.items?.[0]?.name} required placeholder="Item / Service Name" className="w-full text-xs p-2 rounded-xl border" />
-              <div className="grid grid-cols-3 gap-2">
-                <input name="qty" type="number" defaultValue={editingOrder?.items?.[0]?.qty || 1} min="1" placeholder="Qty" className="text-xs p-2 rounded-xl border text-center" />
-                <input name="rate" type="number" defaultValue={editingOrder?.items?.[0]?.rate} required placeholder="Rate (₹)" className="text-xs p-2 rounded-xl border text-center" />
-                <select name="tax" defaultValue={editingOrder?.items?.[0]?.taxPercent || 0} className="text-xs p-2 rounded-xl border bg-white text-center">
-                  <option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option>
-                </select>
+              <input name="item" required placeholder="Item / Product Name" className="w-full text-xs p-2 rounded-xl border" />
+              <div className="grid grid-cols-2 gap-2">
+                <input name="qty" type="number" defaultValue="1" min="1" placeholder="Qty" className="text-xs p-2 rounded-xl border text-center" />
+                <input name="rate" type="number" required placeholder="Rate (₹)" className="text-xs p-2 rounded-xl border text-center" />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <input name="advance" type="number" defaultValue={editingOrder?.advancePaid || 0} placeholder="Advance (₹)" className="text-xs p-2 rounded-xl border" />
-                <input name="date" type="date" defaultValue={editingOrder?.orderDate || new Date().toISOString().slice(0, 10)} required className="text-xs p-2 rounded-xl border" />
+                <input name="advance" type="number" defaultValue="0" placeholder="Advance (₹)" className="text-xs p-2 rounded-xl border" />
+                <input name="date" type="date" defaultValue={new Date().toISOString().slice(0, 10)} required className="text-xs p-2 rounded-xl border" />
               </div>
               <button type="submit" className="w-full py-2 bg-[#101D35] text-white font-bold text-xs rounded-xl shadow">{t.save}</button>
             </form>
@@ -1213,94 +1309,70 @@ function RokdoApplication() {
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: SUBSEQUENT PAYMENT COLLECTION ON ORDER                        */}
-      {/* ==================================================================== */}
+      {/* MODAL: SUBSEQUENT PAYMENT */}
       {orderPaymentTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-3">
             <div className="flex justify-between items-center pb-2 border-b">
-              <div>
-                <h3 className="font-bold text-sm">Add Payment to Order</h3>
-                <div className="text-[10px] text-slate-400">{orderPaymentTarget.orderNumber} • {orderPaymentTarget.customerName}</div>
-              </div>
+              <h3 className="font-bold text-sm">Add Payment to Order</h3>
               <button onClick={() => setOrderPaymentTarget(null)}><Icons.Close c="w-4 h-4" /></button>
             </div>
-
-            <div className="bg-slate-50 p-3 rounded-xl space-y-1 text-xs">
-              <div className="flex justify-between"><span>Grand Total:</span><span className="font-bold">{formatINR(orderPaymentTarget.grandTotal)}</span></div>
-              <div className="flex justify-between text-emerald-600"><span>Paid so far:</span><span className="font-bold">{formatINR(orderPaymentTarget.advancePaid)}</span></div>
-              <div className="flex justify-between text-rose-600 font-bold border-t pt-1"><span>Current Balance Due:</span><span>{formatINR(orderPaymentTarget.remainingBalance)}</span></div>
+            <div className="bg-slate-50 p-2.5 rounded-xl text-xs space-y-1">
+              <div className="flex justify-between"><span>Grand Total:</span><b>{formatINR(orderPaymentTarget.grandTotal)}</b></div>
+              <div className="flex justify-between text-rose-600 font-bold"><span>Balance Due:</span><span>{formatINR(orderPaymentTarget.remainingBalance)}</span></div>
             </div>
-
             <form onSubmit={async (e) => {
               e.preventDefault();
               const f = new FormData(e.currentTarget);
               const payAmt = Number(f.get('amt'));
               const method = f.get('method');
-              const notes = f.get('notes');
-
-              if (payAmt <= 0) return alert('Enter valid amount');
-              await applyPaymentToOrder(orderPaymentTarget.id, payAmt, method, notes);
+              await applyPaymentToOrder(orderPaymentTarget.id, payAmt, method);
               setOrderPaymentTarget(null);
             }} className="space-y-2.5">
-              <div>
-                <label className="text-[10px] font-bold text-slate-500 block mb-1">Payment Amount (₹) *</label>
-                <input name="amt" type="number" defaultValue={orderPaymentTarget.remainingBalance} max={orderPaymentTarget.remainingBalance} required className="w-full text-xs p-2 rounded-xl border font-bold" />
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-slate-500 block mb-1">Payment Channel</label>
-                <select name="method" className="w-full text-xs p-2 rounded-xl border bg-white">
-                  <option value="Cash">Cash in Hand</option>
-                  <option value="Bank">Bank Transfer (NEFT/IMPS)</option>
-                  <option value="UPI">UPI QR Register</option>
-                </select>
-              </div>
-              <input name="notes" placeholder="Transaction remarks / UTR" className="w-full text-xs p-2 rounded-xl border" />
-              <button type="submit" className="w-full py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow">Record &amp; Clear Balance</button>
+              <input name="amt" type="number" defaultValue={orderPaymentTarget.remainingBalance} max={orderPaymentTarget.remainingBalance} required className="w-full text-xs p-2 rounded-xl border font-bold" />
+              <select name="method" className="w-full text-xs p-2 rounded-xl border bg-white">
+                <option value="Cash">Cash in Hand</option>
+                <option value="Bank">Bank Transfer</option>
+                <option value="UPI">UPI QR</option>
+              </select>
+              <button type="submit" className="w-full py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow">Confirm &amp; Clear</button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: ADD / EDIT CUSTOMER                                           */}
-      {/* ==================================================================== */}
+      {/* MODAL: CUSTOMER */}
       {showCustomerModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-bold text-sm">{editingCustomer ? "Edit Customer" : t.addCustomer}</h3>
+              <h3 className="font-bold text-sm">{t.addCustomer}</h3>
               <button onClick={() => setShowCustomerModal(false)}><Icons.Close c="w-4 h-4" /></button>
             </div>
             <form onSubmit={async (e) => {
               e.preventDefault();
               const f = new FormData(e.currentTarget);
-              const cId = editingCustomer ? editingCustomer.id : ('c_' + Date.now());
-              const updatedCust = {
-                id: cId,
+              const newCust = {
+                id: 'c_' + Date.now(),
                 name: f.get('name'),
                 mobile: f.get('mobile'),
-                city: f.get('city') || '',
-                totalPurchases: editingCustomer ? editingCustomer.totalPurchases : 0,
-                totalReceived: editingCustomer ? editingCustomer.totalReceived : 0,
-                outstandingBalance: editingCustomer ? editingCustomer.outstandingBalance : 0
+                totalPurchases: 0,
+                totalReceived: 0,
+                outstandingBalance: 0
               };
-              await DB.saveItem(bizId, 'customers', updatedCust.id, updatedCust, currentUser.uid);
-              await reloadAllData(bizId);
+              await DB.saveItem(bizId, 'customers', newCust.id, newCust, currentUser.uid);
+              await reloadAll(bizId);
               setShowCustomerModal(false);
             }} className="space-y-2.5">
-              <input name="name" defaultValue={editingCustomer?.name} required placeholder="Customer / Firm Name *" className="w-full text-xs p-2 rounded-xl border" />
-              <input name="mobile" defaultValue={editingCustomer?.mobile} required placeholder="Mobile Number (10-Digit) *" className="w-full text-xs p-2 rounded-xl border" />
-              <input name="city" defaultValue={editingCustomer?.city} placeholder="City / Area" className="w-full text-xs p-2 rounded-xl border" />
+              <input name="name" required placeholder="Customer Name *" className="w-full text-xs p-2 rounded-xl border" />
+              <input name="mobile" required placeholder="Mobile Number (10-Digit) *" className="w-full text-xs p-2 rounded-xl border" />
               <button type="submit" className="w-full py-2 bg-[#101D35] text-white font-bold text-xs rounded-xl shadow">{t.save}</button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: ADD SUPPLIER                                                  */}
+      {/* MODAL: SUPPLIER */}
       {showSupplierModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl">
@@ -1319,21 +1391,20 @@ function RokdoApplication() {
                 payableBalance: Number(f.get('bal') || 0)
               };
               await DB.saveItem(bizId, 'suppliers', sup.id, sup, currentUser.uid);
-              await reloadAllData(bizId);
+              await reloadAll(bizId);
               setShowSupplierModal(false);
             }} className="space-y-2.5">
-              <input name="name" required placeholder="Supplier / Vendor Name *" className="w-full text-xs p-2 rounded-xl border" />
+              <input name="name" required placeholder="Supplier Name *" className="w-full text-xs p-2 rounded-xl border" />
               <input name="mobile" required placeholder="Mobile / WhatsApp *" className="w-full text-xs p-2 rounded-xl border" />
-              <input name="category" placeholder="Material Category (e.g. Steel, Timber)" className="w-full text-xs p-2 rounded-xl border" />
-              <input name="bal" type="number" defaultValue="0" placeholder="Opening Payable Balance (₹)" className="w-full text-xs p-2 rounded-xl border" />
+              <input name="category" placeholder="Material Category" className="w-full text-xs p-2 rounded-xl border" />
+              <input name="bal" type="number" defaultValue="0" placeholder="Opening Balance" className="w-full text-xs p-2 rounded-xl border" />
               <button type="submit" className="w-full py-2 bg-[#101D35] text-white font-bold text-xs rounded-xl shadow">{t.save}</button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: CREATE QUOTATION WITH INLINE CUSTOMER CREATION                 */}
+      {/* MODAL: QUOTATION */}
       {showQuotationModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl my-6">
@@ -1346,12 +1417,11 @@ function RokdoApplication() {
               const f = new FormData(e.currentTarget);
               let cust = customers.find(c => c.id === f.get('cId'));
 
-              // Support Inline New Customer creation directly from Quotation
               if (!cust && f.get('inlineName')) {
                 const newC = {
                   id: 'c_' + Date.now(),
                   name: f.get('inlineName'),
-                  mobile: f.get('inlineMobile') || '9999999999',
+                  mobile: '9999999999',
                   totalPurchases: 0,
                   totalReceived: 0,
                   outstandingBalance: 0
@@ -1360,8 +1430,7 @@ function RokdoApplication() {
                 cust = newC;
               }
 
-              if (!cust) return alert("Select or enter a customer");
-
+              if (!cust) return alert("Select customer");
               const qty = Number(f.get('qty') || 1);
               const rate = Number(f.get('rate') || 0);
               const grandTotal = qty * rate;
@@ -1378,19 +1447,15 @@ function RokdoApplication() {
                 grandTotal,
                 status: 'sent'
               };
-
               await DB.saveItem(bizId, 'quotations', qte.id, qte, currentUser.uid);
-              await reloadAllData(bizId);
+              await reloadAll(bizId);
               setShowQuotationModal(false);
             }} className="space-y-2.5">
-              <div>
-                <label className="text-xs font-semibold block mb-1">Select Customer or Add New</label>
-                <select name="cId" className="w-full text-xs p-2 rounded-xl border bg-white mb-1">
-                  <option value="">Existing customer...</option>
-                  {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-                <input name="inlineName" placeholder="Or type new customer name directly..." className="w-full text-xs p-2 rounded-xl border bg-slate-50" />
-              </div>
+              <select name="cId" className="w-full text-xs p-2 rounded-xl border bg-white">
+                <option value="">Select customer...</option>
+                {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+              <input name="inlineName" placeholder="Or type new customer name directly..." className="w-full text-xs p-2 rounded-xl border bg-slate-50" />
               <input name="item" required placeholder="Quotation Item Description" className="w-full text-xs p-2 rounded-xl border" />
               <div className="grid grid-cols-2 gap-2">
                 <input name="qty" type="number" defaultValue="1" min="1" placeholder="Qty" className="text-xs p-2 rounded-xl border text-center" />
@@ -1403,8 +1468,7 @@ function RokdoApplication() {
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: DIRECT PAYMENT RECEIPT                                        */}
+      {/* MODAL: DIRECT PAYMENT */}
       {showPaymentModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl">
@@ -1433,7 +1497,7 @@ function RokdoApplication() {
               cust.outstandingBalance = Math.max(0, (cust.outstandingBalance || 0) - amt);
               await DB.saveItem(bizId, 'customers', cust.id, cust, currentUser.uid);
 
-              await reloadAllData(bizId);
+              await reloadAll(bizId);
               setShowPaymentModal(false);
             }} className="space-y-2.5">
               <select name="cId" required className="w-full text-xs p-2 rounded-xl border bg-white">
@@ -1455,8 +1519,7 @@ function RokdoApplication() {
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: RECORD EXPENSE                                                */}
+      {/* MODAL: EXPENSE */}
       {showExpenseModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl">
@@ -1475,7 +1538,7 @@ function RokdoApplication() {
                 date: f.get('date')
               };
               await DB.saveItem(bizId, 'expenses', exp.id, exp, currentUser.uid);
-              await reloadAllData(bizId);
+              await reloadAll(bizId);
               setShowExpenseModal(false);
             }} className="space-y-2.5">
               <input name="title" required placeholder="Expense Title" className="w-full text-xs p-2 rounded-xl border" />
@@ -1492,131 +1555,23 @@ function RokdoApplication() {
         </div>
       )}
 
-      {/* ==================================================================== */}
-      {/* MODAL: CUSTOMER LEDGER STATEMENT                                     */}
+      {/* MODAL: LEDGER */}
       {selectedCustLedger && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-2xl p-5 shadow-2xl flex flex-col max-h-[80vh]">
             <div className="flex justify-between items-start pb-2 border-b">
               <div>
                 <h3 className="font-bold text-sm">{selectedCustLedger.name}</h3>
-                <div className="text-[11px] text-slate-400">Ledger Statement • Ph: {selectedCustLedger.mobile}</div>
+                <div className="text-[11px] text-slate-400">Account Ledger Statement</div>
               </div>
               <button onClick={() => setSelectedCustLedger(null)}><Icons.Close c="w-4 h-4" /></button>
             </div>
             <div className="flex-1 overflow-y-auto py-2 divide-y text-xs">
               <div className="p-2 bg-slate-50 flex justify-between font-bold mb-2">
-                <span>Remaining Balance Due:</span>
+                <span>Balance Due:</span>
                 <span className="text-rose-600">{formatINR(selectedCustLedger.outstandingBalance)}</span>
               </div>
               {getCustomerLedger(selectedCustLedger.id).map(entry => (
-                <div key={entry.id} className="py-2 flex justify-between items-center">
+                <div key={entry.id} className="py-2 flex justify-between">
                   <div>
-                    <div className="font-semibold text-slate-800">{entry.desc}</div>
-                    <div className="text-[10px] text-slate-400">{formatDateIndian(entry.date)}</div>
-                  </div>
-                  <div className="text-right">
-                    {entry.debit > 0 && <span className="font-bold text-rose-600 block">Dr: {formatINR(entry.debit)}</span>}
-                    {entry.credit > 0 && <span className="font-bold text-emerald-600 block">Cr: {formatINR(entry.credit)}</span>}
-                    <span className="text-[10px] text-slate-400">Bal: {formatINR(entry.runningBalance)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => setSelectedCustLedger(null)} className="w-full py-2 bg-slate-100 rounded-xl font-bold text-xs mt-2">Close Ledger</button>
-          </div>
-        </div>
-      )}
-
-      {/* ==================================================================== */}
-      {/* MODAL: 4-TEMPLATE A4 PRINTABLE INVOICE / QUOTATION                   */}
-      {activeInvoiceDoc && (
-        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-3 overflow-y-auto">
-          <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-6 text-[#202B3C] space-y-4 my-6">
-            <div className="no-print flex justify-between items-center pb-2 border-b">
-              <select value={docTemplateOverride} onChange={e => setDocTemplateOverride(e.target.value)} className="text-xs p-1.5 rounded-lg border bg-white">
-                <option value="template1">Template 1: Classic Professional</option>
-                <option value="template2">Template 2: Premium Corporate</option>
-                <option value="template3">Template 3: Modern Minimal</option>
-                <option value="template4">Template 4: Elegant Business</option>
-              </select>
-              <button onClick={() => setActiveInvoiceDoc(null)}><Icons.Close c="w-4 h-4" /></button>
-            </div>
-
-            <div id="printable-doc" className="p-2 text-xs space-y-3 font-sans">
-              <div className="flex justify-between items-start pb-3 border-b-2 border-[#101D35]">
-                <div>
-                  <div className="text-lg font-black text-[#101D35]">{biz.name}</div>
-                  <div className="text-slate-500 text-[11px]">{biz.address}, {biz.city}</div>
-                  <div className="text-slate-500 text-[11px]">Ph: {biz.phone} | GST: {biz.gstin || 'Unregistered'}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-black text-[#C9A04A] uppercase text-sm">{activeInvoiceDoc.docType === 'quotation' ? "QUOTATION" : "TAX INVOICE"}</div>
-                  <div className="font-bold text-slate-800">{activeInvoiceDoc.orderNumber || activeInvoiceDoc.quoteNumber}</div>
-                  <div className="text-slate-400 text-[10px]">{formatDateIndian(activeInvoiceDoc.orderDate || activeInvoiceDoc.quoteDate)}</div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[10px] uppercase font-bold text-slate-400">Billed To</div>
-                <div className="font-bold text-sm text-[#101D35]">{activeInvoiceDoc.customerName}</div>
-                <div className="text-slate-500">Mobile: {activeInvoiceDoc.customerMobile}</div>
-              </div>
-
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="bg-slate-100 text-[#101D35] font-bold">
-                    <th className="py-1.5 px-2 text-left">Item Description</th>
-                    <th className="py-1.5 px-2 text-center">Qty</th>
-                    <th className="py-1.5 px-2 text-right">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {activeInvoiceDoc.items ? activeInvoiceDoc.items.map((it, idx) => (
-                    <tr key={idx}>
-                      <td className="py-2 px-2 font-semibold">{it.name}</td>
-                      <td className="py-2 px-2 text-center">{it.qty}</td>
-                      <td className="py-2 px-2 text-right font-bold">{formatINR(it.total)}</td>
-                    </tr>
-                  )) : (
-                    <tr>
-                      <td className="py-2 px-2 font-semibold">Standard Goods Order</td>
-                      <td className="py-2 px-2 text-center">1</td>
-                      <td className="py-2 px-2 text-right font-bold">{formatINR(activeInvoiceDoc.grandTotal)}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-
-              <div className="border-t pt-2 space-y-1 text-right text-xs">
-                <div className="text-sm font-black text-[#101D35]">Grand Total: {formatINR(activeInvoiceDoc.grandTotal)}</div>
-                {activeInvoiceDoc.docType !== 'quotation' && (
-                  <>
-                    <div className="text-emerald-700">Advance Paid: <b>{formatINR(activeInvoiceDoc.advancePaid)}</b></div>
-                    <div className="text-sm font-black text-rose-600">Balance Due: {formatINR(activeInvoiceDoc.remainingBalance)}</div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="no-print flex gap-2 pt-2 border-t">
-              <button onClick={() => window.print()} className="flex-1 py-2 bg-[#101D35] text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1">
-                <Icons.Print c="w-3.5 h-3.5" /><span>Print / PDF</span>
-              </button>
-              <button onClick={() => sendWhatsAppDocument(activeInvoiceDoc, activeInvoiceDoc.docType === 'quotation')} className="flex-1 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1">
-                <Icons.WhatsApp c="w-3.5 h-3.5" /><span>WhatsApp</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RokdoApplication />
-  </React.StrictMode>
-);
+                    <div className="font-bold">{entry.desc}</div>
